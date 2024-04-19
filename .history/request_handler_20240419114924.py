@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer
+from views import get_all_animals
 import json
 
 # Here's a class. It inherits from another class.
@@ -42,37 +42,20 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
     def do_GET(self):
-        self._set_headers(200)
-        response = {}  # Default response
+            self._set_headers(200)
+            response = {}  # Default response
 
-        # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)
-        #GET Animals
-        if resource == "animals":
-            if id is not None:
-                response = get_single_animal(id)
-            else:
-                response = get_all_animals()
-        #GET Locations        
-        elif resource == "locations":
-            if id is not None:
-                response = get_single_location(id)
-            else:
-                response = get_all_locations()
-        #GET Employees        
-        elif resource == "employees":
-            if id is not None:
-                response = get_single_employee(id)
-            else:
-                response = get_all_employees()
-        #GET Customers        
-        elif resource == "customers":
-            if id is not None:
-                response = get_single_customer(id)
-            else:
-                response = get_all_customers()        
+            # Parse the URL and capture the tuple that is returned
+            (resource, id) = self.parse_url(self.path)
 
-        self.wfile.write(json.dumps(response).encode())  
+            if resource == "animals":
+                if id is not None:
+                    response = self.get_single_animal(id)
+                else:
+                    response = get_all_animals()
+
+            self.wfile.write(json.dumps(response).encode())
+
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
@@ -93,6 +76,21 @@ class HandleRequests(BaseHTTPRequestHandler):
         """Handles PUT requests to the server"""
         self.do_POST()
 
+    # Function with a single parameter
+    def get_single_animal(id):
+        # Variable to hold the found animal, if it exists
+        requested_animal = None
+
+        # Iterate the ANIMALS list above. Very similar to the
+        # for..of loops you used in JavaScript.
+        for animal in ANIMALS:
+            # Dictionaries in Python use [] notation to find a key
+            # instead of the dot notation that JavaScript used.
+            if animal["id"] == id:
+                requested_animal = animal
+
+        return requested_animal
+    
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
         # path is "/animals/1", the resulting list will
@@ -112,8 +110,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         except ValueError:
             pass  # Request had trailing slash: /animals/
 
-        return (resource, id)  # This is a tuple 
-    
+        return (resource, id)  # This is a tuple    
 # This function is not inside the class. It is the starting
 # point of this application.
 def main():

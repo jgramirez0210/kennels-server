@@ -1,31 +1,31 @@
-LOCATIONS = [
+CUSTOMERS = [
     {
         "id": 1,
-        "name": "Nashville North",
-        "address": "8422 Johnson Pike"
+        "name": "Bob Bobbert"
     },
     {
         "id": 2,
-        "name": "Nashville South",
-        "address": "209 Emory Drive"
+        "name": "Zane Zach"
     }
+
+
 ]
 # Function to retrieve all locations
-def get_all_locations():
+def get_all_customers():
   # Return the global LOCATIONS variable
-  return LOCATIONS
+  return CUSTOMERS
 
 # Function to retrieve a single location based on its ID
-def get_single_location(id):
+def get_single_customer(id):
   # Initialize a variable to store the requested location
-  request_location = None
+  request_customer = None
 
   # Iterate through the LOCATIONS list
-  for location in LOCATIONS:
+  for customer in CUSTOMERS:
     # Check if the current location's ID matches the requested ID
-    if location["id"] == id:
+    if customer["id"] == id:
       # If so, set the request_location variable to the current location
-      request_location = location
+      request_customer = customer
 
   # Return the requested location
-  return request_location
+  return request_customer

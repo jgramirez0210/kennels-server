@@ -1,12 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer
-import json
+from views import get_all_animals
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
 # work together for a common purpose. In this case, that
 # common purpose is to respond to HTTP requests from a client.
-
 
 class HandleRequests(BaseHTTPRequestHandler):
     # This is a Docstring it should be at the beginning of all classes and functions
@@ -37,61 +35,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header(
             "Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept"
         )
-        self.end_headers()
-
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any GET request.
-    def do_GET(self):
-        self._set_headers(200)
-        response = {}  # Default response
-
-        # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)
-        #GET Animals
-        if resource == "animals":
-            if id is not None:
-                response = get_single_animal(id)
-            else:
-                response = get_all_animals()
-        #GET Locations        
-        elif resource == "locations":
-            if id is not None:
-                response = get_single_location(id)
-            else:
-                response = get_all_locations()
-        #GET Employees        
-        elif resource == "employees":
-            if id is not None:
-                response = get_single_employee(id)
-            else:
-                response = get_all_employees()
-        #GET Customers        
-        elif resource == "customers":
-            if id is not None:
-                response = get_single_customer(id)
-            else:
-                response = get_all_customers()        
-
-        self.wfile.write(json.dumps(response).encode())  
-
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any POST request.
-    def do_POST(self):
-        """Handles POST requests to the server"""
-        # Set response code to 'Created'
-        self._set_headers(201)
-
-        content_len = int(self.headers.get("content-length", 0))
-        post_body = self.rfile.read(content_len)
-        response = f"received post request:<br>{post_body}"
-        self.wfile.write(response.encode())
-
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any PUT request.
-
-    def do_PUT(self):
-        """Handles PUT requests to the server"""
-        self.do_POST()
 
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
@@ -112,8 +55,51 @@ class HandleRequests(BaseHTTPRequestHandler):
         except ValueError:
             pass  # Request had trailing slash: /animals/
 
-        return (resource, id)  # This is a tuple 
-    
+        return (resource, id)  # This is a tuple
+
+    # Here's a method on the class that overrides the parent's method.
+    # It handles any GET request.
+    def do_GET(self):
+        """Handles GET requests to the server"""
+        # Set the response code to 'Ok'
+        self._set_headers(200)
+
+        # Your new console.log() that outputs to the terminal
+        print(self.path)
+
+        # It's an if..else statement
+        # In Python, this is a list of dictionaries
+        # In JavaScript, you would call it an array of objects
+        if self.path == "/animals":
+         response = get_all_animals()
+
+
+        else:
+         response = []
+
+    # This weird code sends a response back to the client
+        self.wfile.write(f"{response}".encode())
+
+    # Here's a method on the class that overrides the parent's method.
+    # It handles any POST request.
+    def do_POST(self):
+        """Handles POST requests to the server"""
+        # Set response code to 'Created'
+        self._set_headers(201)
+
+        content_len = int(self.headers.get("content-length", 0))
+        post_body = self.rfile.read(content_len)
+        response = f"received post request:<br>{post_body}"
+        self.wfile.write(response.encode())
+
+    # Here's a method on the class that overrides the parent's method.
+    # It handles any PUT request.
+
+    def do_PUT(self):
+        """Handles PUT requests to the server"""
+        self.do_POST()
+
+
 # This function is not inside the class. It is the starting
 # point of this application.
 def main():

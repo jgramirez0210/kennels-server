@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee
+from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location
 import json
 
 # Here's a class. It inherits from another class.
@@ -87,29 +87,17 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
-        # Initialize new animal and location
+        # Initialize new animal
         new_animal = None
-        new_location = None
-        new_employee = None
 
-
-        # Add a new animal to the list.
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
         if resource == "animals":
             new_animal = create_animal(post_body)
-        # Add a new location to the list.
-        elif resource == "locations":
-            new_location = create_location(post_body)
-        elif resource == "employees":
-            new_employee = create_employee(post_body)    
 
         # Encode the new animal and send in response
-        if new_animal:
-            self.wfile.write(json.dumps(new_animal).encode())
-        # Encode the new location and send in response
-        elif new_location:
-            self.wfile.write(json.dumps(new_location).encode())
-        elif new_employee:
-            self.wfile.write(json.dumps(new_employee).encode())    
+        self.wfile.write(json.dumps(new_animal).encode())
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
 

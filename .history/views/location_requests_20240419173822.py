@@ -32,22 +32,17 @@ def get_single_location(id):
 
 #CREATE LOCATION
 def create_location(location):
-  # Check if LOCATIONS is empty
-  if LOCATIONS:
-    # Get the id value of the last location in the list
+    # Get the id value of the last animal in the list
     max_id = LOCATIONS[-1]["id"]
-  else:
-    # If LOCATIONS is empty, start IDs from 1
-    max_id = 0
 
-  # Add 1 to whatever that number is
-  new_id = max_id + 1
+    # Add 1 to whatever that number is
+    new_id = max_id + 1
 
-  # Add an `id` property to the location dictionary
-  location["id"] = new_id
+    # Add an `id` property to the animal dictionary
+    location["id"] = new_id
 
-  # Add the location dictionary to the list
-  LOCATIONS.append(location)
+    # Add the animal dictionary to the list
+    LOCATIONS.append(location)
 
-  # Return the dictionary with `id` property added
-  return location
+    # Return the dictionary with `id` property added
+    return location

@@ -31,21 +31,21 @@ def get_single_employee(id):
 
 #CREATE EMPLOYEE
 def create_employee(employee):
-  # Check if EMPLOYEES is empty
+  # Check if EMPLOYEE is empty
   if EMPLOYEES:
-    # Get the id value of the last employee in the list
+    # Get the id value of the last location in the list
     max_id = EMPLOYEES[-1]["id"]
   else:
-    # If EMPLOYEES is empty, start IDs from 1
+    # If EMPLOYEE is empty, start IDs from 1
     max_id = 0
 
   # Add 1 to whatever that number is
   new_id = max_id + 1
 
-  # Add an `id` property to the employee dictionary
+  # Add an `id` property to the location dictionary
   employee["id"] = new_id
 
-  # Add the employee dictionary to the list
+  # Add the location dictionary to the list
   EMPLOYEES.append(employee)
 
   # Return the dictionary with `id` property added

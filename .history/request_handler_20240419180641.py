@@ -90,7 +90,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Initialize new animal and location
         new_animal = None
         new_location = None
-        new_employee = None
+        employee = None
 
 
         # Add a new animal to the list.

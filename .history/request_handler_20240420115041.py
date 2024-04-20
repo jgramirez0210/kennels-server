@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee, create_customer, delete_animal, delete_location, delete_customer, delete_employee
+from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee, create_customer, delete_animal, delete_location, delete_customer
 import json
 
 # Here's a class. It inherits from another class.
@@ -154,15 +154,11 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "animals":
             delete_animal(id)
-        # Delete a single location from the list
         elif resource == "locations":
             delete_location(id)
-        # Delete a single customer from the list            
         elif resource == "customers":
-            delete_customer(id)
-        # Delete a single employee from the list            
-        elif resource == "employee":
-            delete_employee(id)
+            delete_customer(id)        
+
         # Encode the new animal and send in response
         self.wfile.write("".encode())
 # This function is not inside the class. It is the starting

@@ -58,42 +58,18 @@ def get_all_customers():
 
 # Function to retrieve a single location based on its ID
 def get_single_customer(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
+  # Initialize a variable to store the requested location
+  request_customer = None
 
-        # Use a ? parameter to inject a variable's value
-        # into the SQL statement.
-        db_cursor.execute("""
-        SELECT
-            c.id,
-            c.name,
-            c.address,
-            c.email,
-            c.password
-        FROM customer c
-        WHERE c.id = ?
-        """, ( id, ))
-
-        # Load the single result into memory
-        data = db_cursor.fetchone()
-
-        # Create an animal instance from the current row
-        customer = Customer(data['id'], 
-                          data['name'], 
-                          data['address'],
-                          data['email'], data['password'])
-
-        return customer.__dict__
   # Iterate through the LOCATIONS list
-  # for customer in CUSTOMERS:
-  #   # Check if the current location's ID matches the requested ID
-  #   if customer["id"] == id:
-  #     # If so, set the request_location variable to the current location
-  #     request_customer = customer
+  for customer in CUSTOMERS:
+    # Check if the current location's ID matches the requested ID
+    if customer["id"] == id:
+      # If so, set the request_location variable to the current location
+      request_customer = customer
 
-  # # Return the requested location
-  # return request_customer
+  # Return the requested location
+  return request_customer
 
 #CREATE CUSTOMER
 def create_customer(customer):

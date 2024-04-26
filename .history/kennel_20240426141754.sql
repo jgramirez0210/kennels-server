@@ -72,10 +72,11 @@ FROM animal a
 WHERE a.id = 6
 
 SELECT
-	c.id,
-	c.name,
-	c.address,
-	c.email,
-	c.password
-FROM customer c
-WHERE c.id = 2
+    c.id,
+    c.name,
+    c.address,
+    c.email,
+    c.passwprd,
+
+FROM customer C
+WHERE c.id = 6

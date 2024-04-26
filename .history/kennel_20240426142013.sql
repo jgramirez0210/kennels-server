@@ -78,4 +78,3 @@ SELECT
 	c.email,
 	c.password
 FROM customer c
-WHERE c.id = 2

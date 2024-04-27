@@ -27,7 +27,7 @@ def get_all_locations():
     FROM location l
     """)
 
-    locations = []
+    location = []
     dataset = db_cursor.fetchall()
 
     for row in dataset:
@@ -35,9 +35,9 @@ def get_all_locations():
                 row['name'], 
                 row['address'])
 
-      locations.append(location.__dict__)
-      
-  return locations
+      location.append(location.__dict__)
+
+  return location
 
 def get_single_location(id):
   with sqlite3.connect("./kennel.sqlite3") as conn:

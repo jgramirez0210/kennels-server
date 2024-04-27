@@ -141,7 +141,6 @@ def update_customer(id, new_customer):
       # Found the customer. Update the value.
       CUSTOMERS[index] = new_customer
       break
-    
 def get_customer_by_email(email):
   with sqlite3.connect("./kennel.sqlite3") as conn:
     conn.row_factory = sqlite3.Row
@@ -151,7 +150,7 @@ def get_customer_by_email(email):
     SELECT
       c.id,
       c.name,
-      c.address,
+      c.address,  # make sure this column exists in your database
       c.email,
       c.password
     FROM Customer c

@@ -151,7 +151,7 @@ def get_customer_by_email(email):
     SELECT
       c.id,
       c.name,
-      c.address,
+      c.address,  # make sure this column exists in your database
       c.email,
       c.password
     FROM Customer c

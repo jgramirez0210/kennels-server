@@ -23,7 +23,8 @@ def get_all_employees():
       e.id,
       e.name,
       e.address,
-      e.location_id
+      e.email,
+      e.password
     FROM employee e
     """)
 
@@ -34,7 +35,8 @@ def get_all_employees():
       employee = Employee(row['id'], 
                 row['name'], 
                 row['address'],
-                row['location_id'])
+                row['email'], 
+                row['password'])
 
       employees.append(employee.__dict__)
 
@@ -50,7 +52,7 @@ def get_single_employee(id):
       e.id,
       e.name,
       e.address,
-      e.location_id
+      e.password
     FROM employee e
     WHERE e.id = ?
     """, ( id, ))
@@ -60,7 +62,7 @@ def get_single_employee(id):
     employee = Employee(data['id'], 
               data['name'], 
               data['address'],
-              data['location_id'])
+              data['password'])
 
     return employee.__dict__
 #CREATE EMPLOYEE

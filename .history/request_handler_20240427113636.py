@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee, create_customer, delete_animal, delete_location, delete_customer, delete_employee, update_animal, update_location, update_employee, update_customer, get_customer_by_email, get_animals_by_location, get_employees_by_location, get_animals_by_status
+from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee, create_customer, delete_animal, delete_location, delete_customer, delete_employee, update_animal, update_location, update_employee, update_customer, get_customer_by_email, get_animals_by_location, get_employees_by_location
 import json
 from urllib.parse import urlparse, parse_qs
 
@@ -45,48 +45,46 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_GET(self):
         self._set_headers(200)
         response = {}
-
+    
         parsed = self.parse_url(self.path)
-
+    
         if '?' not in self.path:
             ( resource, id ) = parsed
-
+    
             if resource == "animals":
                 if id is not None:
                     response = get_single_animal(id)
                 else:
                     response = get_all_animals()
-
+    
             elif resource == "locations":
                 if id is not None:
                     response = get_single_location(id)
                 else:
                     response = get_all_locations()
-
+    
             elif resource == "employees":
                 if id is not None:
                     response = get_single_employee(id)
                 else:
                     response = get_all_employees()
-
+    
             elif resource == "customers":
                 if id is not None:
                     response = get_single_customer(id)
                 else:
                     response = get_all_customers()
-
+    
         else: # There is a ? in the path, run the query param functions
             (resource, query) = parsed
-
+    
             if query.get('email') and resource == 'customers':
                 response = get_customer_by_email(query['email'][0])
             elif query.get('location_id') and resource == 'animals':
                 response = get_animals_by_location(query['location_id'][0])
             elif query.get('location_id') and resource == 'employees':
                 response = get_employees_by_location(query['location_id'][0])
-            elif query.get('status') and resource == 'animals':
-                response = get_animals_by_status(query['status'][0])
-
+    
         self.wfile.write(json.dumps(response).encode())
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.

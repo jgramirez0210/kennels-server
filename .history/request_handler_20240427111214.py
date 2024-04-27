@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee, create_customer, delete_animal, delete_location, delete_customer, delete_employee, update_animal, update_location, update_employee, update_customer, get_customer_by_email, get_animals_by_location, get_employees_by_location, get_animals_by_status
+from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee, get_all_customers, get_single_customer, create_animal, create_location, create_employee, create_customer, delete_animal, delete_location, delete_customer, delete_employee, update_animal, update_location, update_employee, update_customer
 import json
 from urllib.parse import urlparse, parse_qs
 
@@ -42,52 +42,28 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
-    def do_GET(self):
-        self._set_headers(200)
-        response = {}
+    def do_PUT(self):
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
 
-        parsed = self.parse_url(self.path)
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)  # pass self.path as an argument
 
-        if '?' not in self.path:
-            ( resource, id ) = parsed
+        # Delete a single animal from the list
+        if resource == "animals":
+            update_animal(id, post_body)
+        elif resource == "locations":
+            update_location(id, post_body)    
+        elif resource == "employees":
+            update_employee(id, post_body)
+        elif resource == "customers":
+            update_customer(id, post_body)           
 
-            if resource == "animals":
-                if id is not None:
-                    response = get_single_animal(id)
-                else:
-                    response = get_all_animals()
+        # Encode the new animal and send in response
+        self.wfile.write("".encode())
 
-            elif resource == "locations":
-                if id is not None:
-                    response = get_single_location(id)
-                else:
-                    response = get_all_locations()
-
-            elif resource == "employees":
-                if id is not None:
-                    response = get_single_employee(id)
-                else:
-                    response = get_all_employees()
-
-            elif resource == "customers":
-                if id is not None:
-                    response = get_single_customer(id)
-                else:
-                    response = get_all_customers()
-
-        else: # There is a ? in the path, run the query param functions
-            (resource, query) = parsed
-
-            if query.get('email') and resource == 'customers':
-                response = get_customer_by_email(query['email'][0])
-            elif query.get('location_id') and resource == 'animals':
-                response = get_animals_by_location(query['location_id'][0])
-            elif query.get('location_id') and resource == 'employees':
-                response = get_employees_by_location(query['location_id'][0])
-            elif query.get('status') and resource == 'animals':
-                response = get_animals_by_status(query['status'][0])
-
-        self.wfile.write(json.dumps(response).encode())
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
     def do_POST(self):
@@ -154,8 +130,8 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Encode the new animal and send in response
         self.wfile.write("".encode())
 
-    def parse_url(self, path):
-        """Parse the url into the resource and id"""
+        def parse_url(self, path):
+            """Parse the url into the resource and id"""
         parsed_url = urlparse(path)
         path_params = parsed_url.path.split('/')  # ['', 'animals', 1]
         resource = path_params[1]

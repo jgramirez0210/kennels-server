@@ -1,6 +1,3 @@
-import sqlite3
-from models import Customer
-
 CUSTOMERS = [
     {
         "id": 1,

@@ -55,7 +55,6 @@ def create_location(location):
 
 #DELETE LOCATION
 def delete_location(id):
-    with sqlite3.connect("./kennel.db") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""

@@ -1,3 +1,6 @@
+import sqlite3
+import json
+from models import Employee
 EMPLOYEES = [
     {
         "id": 1,
@@ -11,24 +14,55 @@ EMPLOYEES = [
 
 # Function to retrieve all employees
 def get_all_employees():
-  # Return the global EMPLOYEES variable
-  return EMPLOYEES
+  with sqlite3.connect("./kennel.sqlite3") as conn:
+    conn.row_factory = sqlite3.Row
+    db_cursor = conn.cursor()
 
-# Function to retrieve a single employee based on its ID
+    db_cursor.execute("""
+    SELECT
+      e.id,
+      e.name,
+      e.address,
+      e.location_id
+    FROM employee e
+    """)
+
+    employees = []
+    dataset = db_cursor.fetchall()
+
+    for row in dataset:
+      employee = Employee(row['id'], 
+                row['name'], 
+                row['address'],
+                row['location_id'])
+
+      employees.append(employee.__dict__)
+
+  return employees
+
 def get_single_employee(id):
-  # Initialize a variable to store the requested employee
-  request_employee = None
+  with sqlite3.connect("./kennel.sqlite3") as conn:
+    conn.row_factory = sqlite3.Row
+    db_cursor = conn.cursor()
 
-  # Iterate through the EMPLOYEES list
-  for employee in EMPLOYEES:
-    # Check if the current employee's ID matches the requested ID
-    if employee["id"] == id:
-      # If so, set the request_employee variable to the current employee
-      request_employee = employee
+    db_cursor.execute("""
+    SELECT
+      e.id,
+      e.name,
+      e.address,
+      e.location_id
+    FROM employee e
+    WHERE e.id = ?
+    """, ( id, ))
 
-  # Return the requested employee
-  return request_employee
+    data = db_cursor.fetchone()
 
+    employee = Employee(data['id'], 
+              data['name'], 
+              data['address'],
+              data['location_id'])
+
+    return employee.__dict__
 #CREATE EMPLOYEE
 def create_employee(employee):
   # Check if EMPLOYEES is empty
@@ -50,8 +84,6 @@ def create_employee(employee):
 
   # Return the dictionary with `id` property added
   return employee
-<<<<<<< Updated upstream
-=======
 # DELETE EMPLOYEE
 def delete_employee(id):
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -95,4 +127,3 @@ def get_employees_by_location(location_id):
       employees.append(employee.__dict__)
 
   return employees
->>>>>>> Stashed changes

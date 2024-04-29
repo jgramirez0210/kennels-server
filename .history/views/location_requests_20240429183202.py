@@ -1,3 +1,6 @@
+import sqlite3
+import json
+from models import Location
 LOCATIONS = [
     {
         "id": 1,
@@ -12,24 +15,51 @@ LOCATIONS = [
 ]
 # Function to retrieve all locations
 def get_all_locations():
-  # Return the global LOCATIONS variable
-  return LOCATIONS
+  with sqlite3.connect("./kennel.sqlite3") as conn:
+    conn.row_factory = sqlite3.Row
+    db_cursor = conn.cursor()
 
-# Function to retrieve a single location based on its ID
+    db_cursor.execute("""
+    SELECT
+      l.id,
+      l.name,
+      l.address
+    FROM location l
+    """)
+
+    locations = []
+    dataset = db_cursor.fetchall()
+
+    for row in dataset:
+      location = Location(row['id'], 
+                row['name'], 
+                row['address'])
+
+      locations.append(location.__dict__)
+      
+  return locations
+
 def get_single_location(id):
-  # Initialize a variable to store the requested location
-  request_location = None
+  with sqlite3.connect("./kennel.sqlite3") as conn:
+    conn.row_factory = sqlite3.Row
+    db_cursor = conn.cursor()
 
-  # Iterate through the LOCATIONS list
-  for location in LOCATIONS:
-    # Check if the current location's ID matches the requested ID
-    if location["id"] == id:
-      # If so, set the request_location variable to the current location
-      request_location = location
+    db_cursor.execute("""
+    SELECT
+      l.id,
+      l.name,
+      l.address
+    FROM location l
+    WHERE l.id = ?
+    """, ( id, ))
 
-  # Return the requested location
-  return request_location
+    data = db_cursor.fetchone()
 
+    location = Location(data['id'], 
+              data['name'], 
+              data['address'])
+
+    return location.__dict__
 #CREATE LOCATION
 def create_location(location):
   # Check if LOCATIONS is empty
@@ -51,18 +81,10 @@ def create_location(location):
 
   # Return the dictionary with `id` property added
   return location
-<<<<<<< Updated upstream
-=======
 
 #DELETE LOCATION
 def delete_location(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        db_cursor = conn.cursor()
-
-        db_cursor.execute("""
-        DELETE FROM location
-        WHERE id = ?
-        """, (id, ))
+    with sqlite3.connect
 #UPDATE LOCATION
 def update_location(id, new_location):
   # Iterate the LOCATIONS list, but use enumerate() so that
@@ -72,4 +94,3 @@ def update_location(id, new_location):
       # Found the location. Update the value.
       LOCATIONS[index] = new_location
       break
->>>>>>> Stashed changes

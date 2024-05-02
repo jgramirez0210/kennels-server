@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Location, employee, Animal, Customer, Employee
+from models import Location, Employee, Animal
 LOCATIONS = [
     {
         "id": 1,
@@ -40,51 +40,43 @@ def get_all_locations():
   return locations
 
 def get_single_location(id):
-  with sqlite3.connect("./kennel.sqlite3") as conn:
-    conn.row_factory = sqlite3.Row
-    db_cursor = conn.cursor()
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    # Execute the query to get the location details
-    db_cursor.execute("""
-    SELECT
-      l.id,
-      l.name,
-      l.address,
-      e.id as employee_id,
-      e.name as employee_name,
-      e.address as employee_address,
-      a.id as animal_id,
-      a.name as animal_name,
-      a.breed as animal_breed,
-      a.status as animal_status,
-      a.customer_id as animal_customer_id
-    FROM Location l
-    LEFT JOIN Employee e
-      ON e.location_id = l.id
-    LEFT JOIN Animal a
-      ON a.location_id = l.id
-    WHERE l.id = ?
-    """, (id, ))
+        db_cursor.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.address,
+            e.id employee_id,
+            e.name employee_name,
+            a.id animal_id,
+            a.name animal_name,
+            a.breed animal_breed,
+            a.status animal_status
+        FROM Location l
+        LEFT JOIN Employee e
+            ON e.location_id = l.id
+        LEFT JOIN Animal a
+            ON a.location_id = l.id
+        WHERE l.id = ?
+        """, (id, ))
 
-    employees = []
-    animals = []
-    location = None
-    dataset = db_cursor.fetchall()
+        data = db_cursor.fetchall()
 
-    for row in dataset:
-      if location is None:
-        location = Location(row['id'], row['name'], row['address'])
+        location = Location(data[0]['id'], data[0]['name'], data[0]['address'])
 
-      employee = Employee(row['employee_id'], row['employee_name'], row['employee_address'], row['id'])
-      employees.append(employee.__dict__)
+        for row in data:
+            if row['employee_id'] is not None:
+                employee = Employee(row['employee_id'], row['employee_name'])
+                location.employees.append(employee.__dict__)
 
-      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['id'], row['animal_customer_id'])
-      animals.append(animal.__dict__)
+            if row['animal_id'] is not None:
+                animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'])
+                location.animals.append(animal.__dict__)
 
-    location.employees = employees
-    location.animals = animals
-
-    return location.__dict__
+        return location.__dict__
 #CREATE LOCATION
 def create_location(location):
   # Check if LOCATIONS is empty

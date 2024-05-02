@@ -78,7 +78,7 @@ def get_single_location(id):
       employee = Employee(row['employee_id'], row['employee_name'], row['employee_address'], row['id'])
       employees.append(employee.__dict__)
 
-      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['id'], row['animal_customer_id'])
+      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['animal_customer_id'])
       animals.append(animal.__dict__)
 
     location.employees = employees

@@ -93,35 +93,4 @@ WHERE id = ?
         new_animal['customerId'], id, ))
 
 
-SELECT * FROM Location;
-SELECT
-    a.id,
-    a.name,
-    a.breed,
-    a.status,
-    a.location_id,
-    a.customer_id,
-    l.name location_name,
-    l.address location_address
-FROM Animal a
-JOIN Location l
-    ON l.id = a.location_id
-
-SELECT
-  l.id,
-  l.name,
-  l.address,
-  e.id as employee_id,
-  e.name as employee_name,
-  e.address as employee_address,
-  a.id as animal_id,
-  a.name as animal_name,
-  a.breed as animal_breed,
-  a.status as animal_status,
-  a.customer_id as animal_customer_id
-FROM Location l
-LEFT JOIN Employee e
-  ON e.location_id = l.id
-LEFT JOIN Animal a
-  ON a.location_id = l.id
-WHERE l.id = 1;
+SELECT * FROM Animal;

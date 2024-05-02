@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Location, employee, Animal, Customer, Employee
+from models import Location, employee, Animal, Customer
 LOCATIONS = [
     {
         "id": 1,
@@ -58,10 +58,10 @@ def get_single_location(id):
       a.breed as animal_breed,
       a.status as animal_status,
       a.customer_id as animal_customer_id
-    FROM Location l
-    LEFT JOIN Employee e
+    FROM location l
+    LEFT JOIN employee e
       ON e.location_id = l.id
-    LEFT JOIN Animal a
+    LEFT JOIN animal a
       ON a.location_id = l.id
     WHERE l.id = ?
     """, (id, ))
@@ -75,10 +75,10 @@ def get_single_location(id):
       if location is None:
         location = Location(row['id'], row['name'], row['address'])
 
-      employee = Employee(row['employee_id'], row['employee_name'], row['employee_address'], row['id'])
+      employee = Employee(row['employee_id'], row['employee_name'], row['employee_address'])
       employees.append(employee.__dict__)
 
-      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['id'], row['animal_customer_id'])
+      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['animal_customer_id'])
       animals.append(animal.__dict__)
 
     location.employees = employees

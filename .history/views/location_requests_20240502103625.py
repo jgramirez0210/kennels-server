@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Location, employee, Animal, Customer, Employee
+from models import Location, Employee, Animal
 LOCATIONS = [
     {
         "id": 1,
@@ -44,45 +44,20 @@ def get_single_location(id):
     conn.row_factory = sqlite3.Row
     db_cursor = conn.cursor()
 
-    # Execute the query to get the location details
     db_cursor.execute("""
     SELECT
       l.id,
       l.name,
-      l.address,
-      e.id as employee_id,
-      e.name as employee_name,
-      e.address as employee_address,
-      a.id as animal_id,
-      a.name as animal_name,
-      a.breed as animal_breed,
-      a.status as animal_status,
-      a.customer_id as animal_customer_id
-    FROM Location l
-    LEFT JOIN Employee e
-      ON e.location_id = l.id
-    LEFT JOIN Animal a
-      ON a.location_id = l.id
+      l.address
+    FROM location l
     WHERE l.id = ?
-    """, (id, ))
+    """, ( id, ))
 
-    employees = []
-    animals = []
-    location = None
-    dataset = db_cursor.fetchall()
+    data = db_cursor.fetchone()
 
-    for row in dataset:
-      if location is None:
-        location = Location(row['id'], row['name'], row['address'])
-
-      employee = Employee(row['employee_id'], row['employee_name'], row['employee_address'], row['id'])
-      employees.append(employee.__dict__)
-
-      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['id'], row['animal_customer_id'])
-      animals.append(animal.__dict__)
-
-    location.employees = employees
-    location.animals = animals
+    location = Location(data['id'], 
+              data['name'], 
+              data['address'])
 
     return location.__dict__
 #CREATE LOCATION

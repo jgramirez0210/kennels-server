@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Location, employee, Animal, Customer, Employee
+from models import Location, Employee, Animal
 LOCATIONS = [
     {
         "id": 1,
@@ -44,46 +44,45 @@ def get_single_location(id):
     conn.row_factory = sqlite3.Row
     db_cursor = conn.cursor()
 
-    # Execute the query to get the location details
+      # Execute the query to get the location details
     db_cursor.execute("""
     SELECT
-      l.id,
-      l.name,
-      l.address,
-      e.id as employee_id,
-      e.name as employee_name,
-      e.address as employee_address,
-      a.id as animal_id,
-      a.name as animal_name,
-      a.breed as animal_breed,
-      a.status as animal_status,
-      a.customer_id as animal_customer_id
+        l.id,
+        l.name,
+        l.address
     FROM Location l
-    LEFT JOIN Employee e
-      ON e.location_id = l.id
-    LEFT JOIN Animal a
-      ON a.location_id = l.id
     WHERE l.id = ?
     """, (id, ))
-
-    employees = []
-    animals = []
-    location = None
-    dataset = db_cursor.fetchall()
-
-    for row in dataset:
-      if location is None:
-        location = Location(row['id'], row['name'], row['address'])
-
-      employee = Employee(row['employee_id'], row['employee_name'], row['employee_address'], row['id'])
-      employees.append(employee.__dict__)
-
-      animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], row['animal_status'], row['id'], row['animal_customer_id'])
-      animals.append(animal.__dict__)
-
-    location.employees = employees
-    location.animals = animals
-
+    data = db_cursor.fetchone()
+    location = Location(data['id'], data['name'], data['address'])
+    # Execute the query to get the employees associated with the location
+    db_cursor.execute("""
+    SELECT
+        e.id,
+        e.name
+    FROM Employee e
+    WHERE e.location_id = ?
+    """, (id, ))
+    employees_data = db_cursor.fetchall()
+    # Add each employee to the employees list of the location
+    for row in employees_data:
+        employee = Employee(row['id'], row['name'])
+        location.employees.append(employee.__dict__)
+    # Execute the query to get the animals associated with the location
+    db_cursor.execute("""
+    SELECT
+        a.id,
+        a.name,
+        a.breed,
+        a.status
+    FROM Animal a
+    WHERE a.location_id = ?
+    """, (id, ))
+    animals_data = db_cursor.fetchall()
+    # Add each animal to the animals list of the location
+    for row in animals_data:
+        animal = Animal(row['id'], row['name'], row['breed'], row['status'])
+        location.animals.append(animal.__dict__)
     return location.__dict__
 #CREATE LOCATION
 def create_location(location):

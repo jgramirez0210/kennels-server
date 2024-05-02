@@ -157,40 +157,44 @@ class HandleRequests(BaseHTTPRequestHandler):
     
         self.wfile.write("".encode())
         
-    def parse_url(self, path):
-        """Parse the url into the resource and id"""
-        parsed_url = urlparse(path)
-        path_params = parsed_url.path.split('/')  # ['', 'animals', 1]
-        resource = path_params[1]
-        if parsed_url.query:
-            query = parse_qs(parsed_url.query)
-            return (resource, query)
-        pk = None
-        try:
-            pk = int(path_params[2])
-        except (IndexError, ValueError):
-            pass
-        return (resource, pk)
+        def parse_url(self, path):
+            """Parse the url into the resource and id"""
+            parsed_url = urlparse(path)
+            path_params = parsed_url.path.split('/')  # ['', 'animals', 1]
+            resource = path_params[1]
     
-    def do_DELETE(self):
-        # Set a 204 response code
-        self._set_headers(204)
-         # Parse the URL
-        (resource, id) = self.parse_url(self.path)
-         # Delete a single animal from the list
-        if resource == "animals":
-            delete_animal(id)
-        # Delete a single location from the list
-        elif resource == "locations":
-            delete_location(id)
-        # Delete a single customer from the list            
-        elif resource == "customers":
-            delete_customer(id)
-        # Delete a single employee from the list            
-        elif resource == "employee":
-            delete_employee(id)
-        # Encode the new animal and send in response
-        self.wfile.write("".encode())
+            if parsed_url.query:
+                query = parse_qs(parsed_url.query)
+                return (resource, query)
+    
+            pk = None
+            try:
+                pk = int(path_params[2])
+            except (IndexError, ValueError):
+                pass
+            return (resource, pk)
+        
+        def do_DELETE(self):
+            # Set a 204 response code
+            self._set_headers(204)
+    
+            # Parse the URL
+            (resource, id) = self.parse_url(self.path)
+    
+            # Delete a single animal from the list
+            if resource == "animals":
+                delete_animal(id)
+            # Delete a single location from the list
+            elif resource == "locations":
+                delete_location(id)
+            # Delete a single customer from the list            
+            elif resource == "customers":
+                delete_customer(id)
+            # Delete a single employee from the list            
+            elif resource == "employee":
+                delete_employee(id)
+            # Encode the new animal and send in response
+            self.wfile.write("".encode())
     # This function is not inside the class. It is the starting
     # point of this application.
 def main():

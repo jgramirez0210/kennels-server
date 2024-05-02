@@ -84,9 +84,9 @@ def get_all_animals():
     return animals
 # Function with a single parameter
 def get_single_animal(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
+        with sqlite3.connect("./kennel.sqlite3") as conn:
+         conn.row_factory = sqlite3.Row
+         db_cursor = conn.cursor()
 
         db_cursor.execute("""
         SELECT
@@ -101,7 +101,7 @@ def get_single_animal(id):
             c.id customer_id,
             c.name customer_name,
             c.address customer_address
-        FROM Animal a
+        FROM animal a
         JOIN Location l
             ON l.id = a.location_id
         JOIN Customer c
@@ -111,21 +111,17 @@ def get_single_animal(id):
 
         data = db_cursor.fetchone()
 
-        # Check if data is not None before trying to access its items
-        if data is not None:
-            animal = Animal(data['id'], data['name'], data['breed'],
-                    data['status'], data['location_id'],
-                    data['customer_id'])
+        animal = Animal(data['id'], data['name'], data['breed'],
+                data['status'], data['location_id'],
+                data['customer_id'])
 
-            location = Location(data['location_id'], data['location_name'], data['location_address'])
-            customer = Customer(data['customer_id'], data['customer_name'], data['customer_address'])
-        
-            animal.location = location.__dict__
-            animal.customer = customer.__dict__
-        
-            return animal.__dict__
-        else:
-            return None
+        location = Location(data['location_id'], data['location_name'], data['location_address'])
+        customer = Customer(data['customer_id'], data['customer_name'], data['customer_address'])
+    
+        animal.location = location.__dict__
+        animal.customer = customer.__dict__
+    
+        return animal.__dict__
 
 #CREATE ANIMAL
 def create_animal(animal):
